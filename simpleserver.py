@@ -3,13 +3,9 @@ import os
 from datetime import datetime
 import random
 
-datetime.now().isoformat()
-
 PORT = 8000
-
-boxname = os.uname()[1]
-
-messages = [
+BOXNAME = os.uname()[1]
+MESSAGES = [
     "The technology you use impresses no one. The experience you create with it is everything.",
     "It has become appallingly obvious that our technology has exceeded our humanity.",
     "The real problem is not whether machines think but whether men do.",
@@ -32,9 +28,11 @@ messages = [
     "Technology is a useful servant but a dangerous master.",
     ]
 
-head = "<HTML><HEAD><TITLE>Summit server!</TITLE></HEAD>\n"
-body = f"<p><br>Welcome!<br> My hostname is {boxname}</p>"
-content1 = head + body
+HEAD = "<HTML><HEAD><TITLE>Summit server!</TITLE></HEAD>\n"
+BODY = f"<p><br>Welcome!<br> My hostname is {BOXNAME}</p>"
+THANKS = "🆃🅷🅰🅽🅺 🆈🅾🆄 🅵🅾🆁 🅲🅾🅼🅸🅽🅶"
+
+CONTENT = HEAD + BODY + "</HTML>"
 
 class MyHandler(SimpleHTTPRequestHandler):
     def do_GET(self):
@@ -42,20 +40,25 @@ class MyHandler(SimpleHTTPRequestHandler):
             self.send_response(200)
             self.send_header('Content-type', 'text/html')
             self.end_headers()
-            self.wfile.write(bytes(content1, "utf8"))
+            self.wfile.write(bytes(CONTENT, "utf8"))
         elif self.path == '/app':
             self.send_response(200)
             self.send_header('Content-type', 'text/html')
             self.end_headers()
-            message = random.choice(messages)
-            self.wfile.write(bytes(head + message, "utf8"))
+            message = random.choice(MESSAGES)
+            self.wfile.write(bytes(HEAD + message, "utf8"))
             when = datetime.now().strftime('%Y-%m-%dT%H:%M:%S')
             self.wfile.write(bytes(f"<br><br>The time is now: {when}", "utf8"))
+        elif self.path == '/thanks': 
+            self.send_response(200)
+            self.send_header('Content-type', 'text/html; charset=utf-16')
+            self.end_headers()
+            self.wfile.write(bytes(HEAD + THANKS, "utf-16"))
         else:
             self.send_response(200)
             self.send_header('Content-type', 'text/html')
             self.end_headers()
-            self.wfile.write(bytes(head, "utf8"))
+            self.wfile.write(bytes(CONTENT, "utf8"))
             self.wfile.write(bytes(f"<p>You requested {self.path} but I don't have that, try /index.html or /app", "utf8"))
         print(f"GET for {self.path} from {self.client_address[0]}")
 
