@@ -41,7 +41,7 @@ class MyHandler(SimpleHTTPRequestHandler):
             self.send_header('Content-type', 'text/html')
             self.end_headers()
             self.wfile.write(bytes(CONTENT, "utf8"))
-        elif self.path.startswith == '/app':
+        elif self.path.startswith('/app'):
             self.send_response(200)
             self.send_header('Content-type', 'text/html')
             self.end_headers()
